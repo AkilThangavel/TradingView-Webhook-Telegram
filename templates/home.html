@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          padding: 8px;
+          text-align: center; 
+          vertical-align: middle;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+        /* CSS */
+        .button-9 {
+            appearance: button;
+            backface-visibility: hidden;
+            background-color: #405cf5;
+            border-radius: 6px;
+            border-width: 0;
+            box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset,rgba(50, 50, 93, .1) 0 2px 5px 0,rgba(0, 0, 0, .07) 0 1px 1px 0;
+            box-sizing: border-box;
+            color: #fff;
+            cursor: pointer;
+            font-family: -apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif;
+            font-size: 100%;
+            height: 44px;
+            line-height: 1.15;
+            margin: 12px 0 0;
+            outline: none;
+            overflow: hidden;
+            padding: 0 25px;
+            position: relative;
+            text-align: center;
+            text-transform: none;
+            transform: translateZ(0);
+            transition: all .2s,box-shadow .08s ease-in;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: 100%;
+        }
+
+        .button-9:disabled {
+            cursor: default;
+        }
+
+        .button-9:focus {
+            box-shadow: rgba(50, 50, 93, .1) 0 0 0 1px inset, rgba(50, 50, 93, .2) 0 6px 15px 0, rgba(0, 0, 0, .1) 0 2px 2px 0, rgba(50, 151, 211, .3) 0 0 0 4px;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #333;
+        }
+
+        li {
+            float: left;
+        }
+
+        li a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        li a:hover:not(.active) {
+            background-color: #111;
+        }
+
+        .active {
+            background-color: #04AA6D;
+        }
+    </style>
+    <script
+    src="https://code.jquery.com/jquery-3.6.1.js"
+    integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"></script>
+</head>
+<body>
+    <ul>
+        <li><a class="active" href="#home">Home</a></li>
+        
+    </ul>
+    <h1 style="text-align: center;">{% block title %} Alert Details {% endblock %}</h1>
+    <p style="float: right;"><button id="button1" class="button-9" role="button" onclick="start_stop_bot()" value="ON">Start Sending Signals</button></p>
+    
+    <div class="content">
+        <table>
+            <tr>
+              <th>SN0</th>
+              <th>DateTIme</th>
+              <th>Ticker</th>
+              <th>Order Price</th>
+              <th>Exchange</th>
+              <th>Market Position</th>
+              <th>Order Type</th>
+            </tr>
+            {% for order in orderdetails %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.ticker }}</td>
+                    <td>{{ order.orderdtime }}</td>
+                    <td>{{ order.orderprice }}</td>
+                    <td>{{ order.exchange }}</td>
+                    <td>{{ order.marketposition|upper }}</td>
+                    <td>{{ order.ordertype|upper }}</td>
+                </tr>
+            {% endfor %}
+           
+           
+          </table>
+        
+          
+        
+    </div>
+    <script>
+        function start_stop_bot(){
+            if (document.getElementById('button1').value == "OFF"){
+                console.log("ON");
+                document.getElementById('button1').innerHTML = 'Stop Sending Signals';
+                document.getElementById("button1").style.background='#000000';
+                document.getElementById('button1').value = 'ON';
+                $.ajax({
+                    url: '/onwebhooks',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response){
+                        console.log(response);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                }); 
+            }
+            else if(document.getElementById('button1').value == "ON") {
+                console.log("OFF");
+                document.getElementById('button1').innerHTML = 'Start Sending Signals';
+                document.getElementById("button1").style.background='#405cf5';
+                document.getElementById('button1').value = 'OFF';
+                $.ajax({
+                    url: '/offwebhooks',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response){
+                        console.log(response);
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                }); 
+            }
+        }
+    </script>
+    <script>
+        function check_ss(){
+            $.ajax({
+                    url: '/sswebhooks',
+                    data: $('form').serialize(),
+                    type: 'POST',
+                    success: function(response){
+                        if (response.state == false){
+                            console.log("OFF");
+                            document.getElementById('button1').innerHTML = 'Start Sending Signals';
+                            document.getElementById("button1").style.background='#405cf5';
+                            document.getElementById('button1').value = 'OFF';
+                        }else if(response.state == true){
+                            console.log("ON");
+                            document.getElementById('button1').innerHTML = 'Stop Sending Signals';
+                            document.getElementById("button1").style.background='#000000';
+                            document.getElementById('button1').value = 'ON';
+                        }
+                        
+                        
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                }); 
+        }
+        window.onload = function() {
+            check_ss();
+        };
+    </script>
+</body>
+</html>
