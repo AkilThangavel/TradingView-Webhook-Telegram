@@ -65,12 +65,12 @@ def webhook():
             key = data["passphrase"]
             if key == config.sec_key and var1 == True:
                 print(get_timestamp(), "Alert Received & Sent!")
-                # send_alert(data)
-                # orderObject = TriggeredOrders(ordertype=data['strategy']['order_action'], ticker=data['ticker'],
-                #        exchange=data['exchange'], orderprice=data['strategy']['order_price'], orderdtime = data['time'],
-                #        marketposition=data['strategy']['market_position'])
-                # db.session.add(orderObject)
-                # db.session.commit()
+                send_alert(data)
+                orderObject = TriggeredOrders(ordertype=data['strategy']['order_action'], ticker=data['ticker'],
+                       exchange=data['exchange'], orderprice=data['strategy']['order_price'], orderdtime = data['time'],
+                       marketposition=data['strategy']['market_position'])
+                db.session.add(orderObject)
+                db.session.commit()
                 return "Sent alert", 200
             else:
                 print("[X]", get_timestamp(), "Alert Received & Refused! (Wrong Key)")
