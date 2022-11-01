@@ -58,7 +58,7 @@ def get_timestamp():
 
 
 @app.route("/webhook", methods=["POST"])
-def webhook():
+def webhook():    
     try:
         if request.method == "POST":
             data = request.get_json()
