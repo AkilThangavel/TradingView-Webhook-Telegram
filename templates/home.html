@@ -150,10 +150,10 @@
                 }); 
             }
             else if(document.getElementById('button1').value == "ON") {
-                console.log("OFF");
-                document.getElementById('button1').innerHTML = 'Start Sending Signals';
-                document.getElementById("button1").style.background='#405cf5';
-                document.getElementById('button1').value = 'OFF';
+                console.log("ON");
+                document.getElementById('button1').innerHTML = 'Stop Sending Signals';
+                document.getElementById("button1").style.background='#000000';
+                document.getElementById('button1').value = 'ON';
                 $.ajax({
                     url: '/offwebhooks',
                     data: $('form').serialize(),

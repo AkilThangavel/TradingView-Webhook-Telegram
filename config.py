@@ -36,4 +36,4 @@ email_password = "txlqvaiqpwstgvet"  # SMTP Login credentials
 
 
 #Global Constants
-var1 = False
+var1 = True
