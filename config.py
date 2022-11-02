@@ -33,3 +33,7 @@ email_port = 465  # SMTP SSL Port (ex. 465)
 email_host = "smtp.gmail.com"  # SMTP host (ex. smtp.gmail.com)
 email_user = "akiltalgo@gmail.com"  # SMTP Login credentials
 email_password = "txlqvaiqpwstgvet"  # SMTP Login credentials
+
+
+#Global Constants
+var1 = False

@@ -14,7 +14,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] =\
         'sqlite:///' + os.path.join(basedir, 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-var1 = False
+
 
 
 class TriggeredOrders(db.Model):
@@ -37,19 +37,17 @@ def home():
 
 @app.route('/onwebhooks', methods=['POST'])
 def on_webhooks():
-    global var1
-    var1 = True
+    config.var1 = True
     return json.dumps({'status':'OK'})
 
 @app.route('/offwebhooks', methods=['POST'])
 def off_webhooks():
-    global var1
-    var1 = False
+    config.var1 = False
     return json.dumps({'status':'OK'})
 
 @app.route('/sswebhooks', methods=['POST'])
 def ss_webhooks():
-    return ({'state': var1})
+    return ({'state': config.var1})
 
 
 def get_timestamp():
@@ -63,14 +61,14 @@ def webhook():
         if request.method == "POST":
             data = request.get_json()
             key = data["passphrase"]
-            if key == config.sec_key and var1 == True:
+            if key == config.sec_key and config.var1 == True:
                 print(get_timestamp(), "Alert Received & Sent!")
-                send_alert(data)
-                orderObject = TriggeredOrders(ordertype=data['strategy']['order_action'], ticker=data['ticker'],
-                       exchange=data['exchange'], orderprice=data['strategy']['order_price'], orderdtime = data['time'],
-                       marketposition=data['strategy']['market_position'])
-                db.session.add(orderObject)
-                db.session.commit()
+                # send_alert(data)
+                # orderObject = TriggeredOrders(ordertype=data['strategy']['order_action'], ticker=data['ticker'],
+                #        exchange=data['exchange'], orderprice=data['strategy']['order_price'], orderdtime = data['time'],
+                #        marketposition=data['strategy']['market_position'])
+                # db.session.add(orderObject)
+                # db.session.commit()
                 return "Sent alert", 200
             else:
                 print("[X]", get_timestamp(), "Alert Received & Refused! (Wrong Key)")
